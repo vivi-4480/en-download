@@ -291,4 +291,5 @@ jobs:
             git commit -m "optimize JPEG files"
           fi
 
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
