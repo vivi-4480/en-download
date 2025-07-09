@@ -256,27 +256,37 @@ jobs:
           git config user.name "Sudachi"
           git config user.email "sudachi@cirno.name"
 
-          if git ls-files --modified | grep '\.json\|\.ExpansionJson\|\.vfxj'; then
-            git add '*.json' '*.ExpansionJson' '*.vfxj'
-            git commit -m "optimize JSON, ExpansionJson, and vfxj files"
+          if git ls-files --modified | grep -q '\.json$'; then
+            git add '*.json'
+            git commit -m "optimize JSON files"
           fi
 
-          if git ls-files --modified | grep '\.plist'; then
+          if git ls-files --modified | grep -q '\.ExpansionJson$'; then
+            git add '*.ExpansionJson'
+            git commit -m "optimize ExpansionJson files"
+          fi
+
+          if git ls-files --modified | grep -q '\.vfxj$'; then
+            git add '*.vfxj'
+            git commit -m "optimize vfxj files"
+          fi
+
+          if git ls-files --modified | grep -q '\.plist$'; then
             git add '*.plist'
             git commit -m "optimize XML files"
           fi
 
-          if git ls-files --modified | grep '\.ExportJson.gz'; then
+          if git ls-files --modified | grep -q '\.ExportJson\.gz$'; then
             git add '*.ExportJson.gz'
             git commit -m "optimize gzipped JSON files"
           fi
 
-          if git ls-files --modified | grep '\.png'; then
+          if git ls-files --modified | grep -q '\.png$'; then
             git add '*.png'
             git commit -m "optimize PNG files"
           fi
 
-          if git ls-files --modified | grep '\.jpg'; then
+          if git ls-files --modified | grep -q '\.jpg$'; then
             git add '*.jpg'
             git commit -m "optimize JPEG files"
           fi
