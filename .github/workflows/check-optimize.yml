@@ -1,7 +1,7 @@
 name: Validate and Optimize Files
 
 on:
-  pull_request:
+  pull_request_target:
     paths:
       - 'magica/**/*.json'
       - 'magica/**/*.ExpansionJson'
@@ -21,9 +21,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout PR branch
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 2
 
       - name: Install required tools
@@ -35,7 +37,7 @@ jobs:
         id: changed_files
         run: |
           git fetch origin ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/base
-          CHANGED_FILES=$(git diff --diff-filter=AM --name-only origin/base...${{ github.sha }} | tr '\n' ' ')
+          CHANGED_FILES=$(git diff --diff-filter=AM --name-only origin/base...HEAD | tr '\n' ' ')
           echo "files=$CHANGED_FILES" >> $GITHUB_OUTPUT
 
       - name: Validate JSON, ExpansionJson, and vfxj Files
@@ -180,21 +182,23 @@ jobs:
     if: success()
 
     steps:
-      - name: Checkout repository
+      - name: Checkout PR branch
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 5
 
       - name: Install required tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y libxml2-utils zopfli jpegoptim 
+          sudo apt-get install -y libxml2-utils zopfli jpegoptim
 
       - name: Get Changed Files
         id: changed_files
         run: |
           git fetch origin ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/base
-          CHANGED_FILES=$(git diff --diff-filter=AM --name-only origin/base...${{ github.sha }} | tr '\n' ' ')
+          CHANGED_FILES=$(git diff --diff-filter=AM --name-only origin/base...HEAD | tr '\n' ' ')
           echo "files=$CHANGED_FILES" >> $GITHUB_OUTPUT
 
       - name: Optimize JSON, ExpansionJson, and vfxj Files
@@ -291,5 +295,4 @@ jobs:
             git commit -m "optimize JPEG files"
           fi
 
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
