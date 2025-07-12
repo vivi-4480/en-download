@@ -26,12 +26,7 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
-          fetch-depth: 2
-
-      - name: Install required tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libxml2-utils
+          fetch-depth: 0
 
       - name: Get Changed Files
         id: changed_files
@@ -39,6 +34,11 @@ jobs:
           git fetch origin ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/base
           CHANGED_FILES=$(git diff --diff-filter=AM --name-only origin/base...HEAD | tr '\n' ' ')
           echo "files=$CHANGED_FILES" >> $GITHUB_OUTPUT
+
+      - name: Install required tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxml2-utils
 
       - name: Validate JSON, ExpansionJson, and vfxj Files
         id: validate_json
@@ -187,12 +187,7 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
-          fetch-depth: 5
-
-      - name: Install required tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libxml2-utils zopfli jpegoptim
+          fetch-depth: 0
 
       - name: Get Changed Files
         id: changed_files
@@ -200,6 +195,11 @@ jobs:
           git fetch origin ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/base
           CHANGED_FILES=$(git diff --diff-filter=AM --name-only origin/base...HEAD | tr '\n' ' ')
           echo "files=$CHANGED_FILES" >> $GITHUB_OUTPUT
+
+      - name: Install required tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxml2-utils zopfli jpegoptim
 
       - name: Optimize JSON, ExpansionJson, and vfxj Files
         if: contains(steps.changed_files.outputs.files, '.json') || contains(steps.changed_files.outputs.files, '.ExpansionJson') || contains(steps.changed_files.outputs.files, '.vfxj')

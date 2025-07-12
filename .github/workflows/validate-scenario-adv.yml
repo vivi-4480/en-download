@@ -17,11 +17,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
-
-      - name: Install ajv-cli
-        run: |
-          npm install -g ajv-cli
+          fetch-depth: 0
 
       - name: Get Changed Files
         id: changed_files
@@ -29,6 +25,10 @@ jobs:
           git fetch origin ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/base
           CHANGED_FILES=$(git diff --diff-filter=AM --name-only origin/base...${{ github.sha }} | grep '^magica/resource/download/asset/master/resource/scenario/json/adv/' | tr '\n' ' ')
           echo "files=$CHANGED_FILES" >> $GITHUB_OUTPUT
+
+      - name: Install ajv-cli
+        run: |
+          npm install -g ajv-cli
 
       - name: Validate file naming and structure
         id: validate_structure
