@@ -30,7 +30,7 @@ jobs:
           REL_PATHS=$(echo "$CHANGED" | sed -e "s#^magica/resource/download/asset/master/resource/##")
           {
             echo 'files<<EOF'
-            printf "%s\n" $REL_PATHS
+            printf "%s " $REL_PATHS
             echo 'EOF'
           } >> $GITHUB_OUTPUT
 
